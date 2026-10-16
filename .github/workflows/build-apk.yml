@@ -41,8 +41,12 @@ jobs:
       - name: Compilar APK
         run: |
           cd source/FeEnImagenAndroid
+          if [ -f gradle.properties ]; then
+            sed -i '/^org.gradle.jvmargs=.*android.useAndroidX=true/c\org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8' gradle.properties
+            grep -q '^android.useAndroidX=' gradle.properties || echo 'android.useAndroidX=true' >> gradle.properties
+          fi
           gradle assembleDebug
-
+          
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
